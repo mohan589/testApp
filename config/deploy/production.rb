@@ -6,7 +6,7 @@
 
 role :app, %w{192.168.111.129}
 role :web, %w{192.168.111.129}
-role :db,  %w{192.168.111.129}
+role :db,  %w{192.168.111.129},:primary => true
 
 
 # Extended Server Syntax
