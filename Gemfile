@@ -8,7 +8,7 @@ gem 'rails', '3.2.20'
 gem 'mysql'
 gem 'capistrano', '~> 3.2.0'
 
-
+# gem 'rails_12factor', group: :production
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
