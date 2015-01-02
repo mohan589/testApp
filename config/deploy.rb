@@ -17,7 +17,7 @@ set :user, "mohan"
 set :rails_env, "production"
 set :rails_env, "staging"
 set :deploy_via, :copy
-
+set :use_sudo, false
 # Default value for :format is :pretty
 # set :format, :pretty
 
@@ -51,13 +51,20 @@ namespace :deploy do
 
   after :publishing, :restart
 
+  namespace :testApp do
+    desc "run bundle_install"
+    task :bundle_install do
+      run "cd #{deploy_to}/current/ && bundle install"
+    end
+  end
+
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
       # Here we can do anything such as:
       # within release_path do
       #   execute :rake, 'cache:clear'
+      run 'cap deploy:migrate'
       # end
     end
   end
-
 end
