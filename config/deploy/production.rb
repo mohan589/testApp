@@ -35,6 +35,7 @@ set :ssh_options, {
 	keys: %w(/home/mohan/.ssh/id_rsa),
 	forward_agent: false,
 	user: 'mohan',	
+	# verbose: :debug
 	# auth_methods: %w(mohan143)
 }
 #

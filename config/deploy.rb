@@ -20,6 +20,7 @@ set :rails_env, "production"
 # set :rails_env, "staging"
 set :deploy_via, :copy
 set :use_sudo, false
+set :releases_path, File.join(deploy_to)
 # Default value for :format is :pretty
 # set :format, :pretty
 
@@ -52,12 +53,27 @@ namespace :deploy do
     end
   end
 
-   desc "Transfer Figaro's application.yml to shared/config"
-   task :migrate do
-    on roles(:app), in: :sequence, wait: 5 do
-      execute :rake, "db:migrate RAILS_ENV=production"
+  # desc 'Runs rake db:migrate if migrations are set'
+  # task :migrate do
+    # on primary fetch(:migration_role) do
+      # puts "From migrate task -> Release path is: #{release_path.to_s}" 
+      # within release_path do
+        # with rails_env: fetch(:rails_env) do
+        # execute 'cd #{releases_path}'
+        # execute :rake, "db:migrate RAILS_ENV=production"
+        # end
+      # end
+    # end
+  # end
+
+  desc "Transfer Figaro's application.yml to shared/config"
+  task :migrate do
+    on roles(:all), in: :sequence, wait: 5 do
+      execute 'cd #{deploy_to}/current'      
+      execute 'bundle install --path vendor/cache'
+      execute 'rake db:migrate RAILS_ENV = production'      
     end
-   end
+  end
 
   after :publishing, :restart
   
@@ -84,7 +100,7 @@ namespace :deploy do
 
  after 'deploy:updated', 'deploy:migrate'
  before "deploy:check", "figaro:upload"
- after "deploy:finished", "dbsetup:bundleinstall"
+ # after "deploy:finished", "dbsetup:bundleinstall"
  
 
   after :restart, :clear_cache do
