@@ -4,7 +4,7 @@ gem 'rails', '3.2.20'
 gem 'capistrano-rails', '~> 1.1'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
-gem "net-ssh", "~> 2.7.0"
+
 gem 'mysql'
 gem 'capistrano', '~> 3.2.0'
 
