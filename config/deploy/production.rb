@@ -30,6 +30,13 @@ server '192.168.111.129', user: 'mohan', password: 'mohan143', roles: %w{web app
 #    forward_agent: false,
 #    auth_methods: %w(password)
 #  }
+
+set :ssh_options, {
+	keys: %w(/home/mohan/.ssh/id_rsa),
+	forward_agent: false,
+	user: 'mohan',
+	auth_methods: %w(mohan143)
+}
 #
 # And/or per server (overrides global)
 # ------------------------------------

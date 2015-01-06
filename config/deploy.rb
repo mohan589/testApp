@@ -52,6 +52,13 @@ namespace :deploy do
     end
   end
 
+   desc "Transfer Figaro's application.yml to shared/config"
+   task :migrate do
+    on roles(:app), in: :sequence, wait: 5 do
+      execute :rake, "db:migrate RAILS_ENV=production"
+    end
+   end
+
   after :publishing, :restart
   
 
@@ -75,9 +82,11 @@ namespace :deploy do
    end
  end
 
+ after 'deploy:updated', 'deploy:migrate'
  before "deploy:check", "figaro:upload"
  after "deploy:finished", "dbsetup:bundleinstall"
- after "deploy:update_code", "deploy:migrate"
+ 
+
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
       # Here we can do anything such as:
@@ -87,7 +96,7 @@ namespace :deploy do
     end
   end
 
-set :rvm_ruby_version, '1.9.3'
-set :default_env, { rvm_bin_path: '~/.rbenv/bin' }
-SSHKit.config.command_map[:rake] = "#{fetch(:default_env)[:rbenv_bin_path]}/rvm ruby-#{fetch(:rbenv_ruby_version)} do bundle exec rake"
+# set :rvm_ruby_version, '1.9.3'
+# set :default_env, { rvm_bin_path: '~/.rbenv/bin' }
+# SSHKit.config.command_map[:rake] = "#{fetch(:default_env)[:rbenv_bin_path]}/rvm ruby-#{fetch(:rbenv_ruby_version)} do bundle exec rake"
 end
