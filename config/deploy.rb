@@ -8,7 +8,7 @@ set :repo_url, '/home/mohan/testApp/.git/'
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 
 # Default deploy_to directory is /var/www/my_app
-set :deploy_to, '/home/mohan/sampleDeploy'
+set :deploy_to, '/home/mohan/testAppDeploy'
 set :stages, ["staging", "development", "production"]
 set :default_stage, "production"
 # Default value for :scm is :git
@@ -44,14 +44,14 @@ set :keep_releases, 5
 
 namespace :deploy do
 
-  desc 'Restart application'
-  task :restart do
-    on roles(:app), in: :sequence, wait: 5 do
-      # Your restart mechanism here, for example:
-      # execute :touch, release_path.join('tmp/restart.txt')
-      execute :chown, "-R :#{fetch(:group)} #{deploy_to} && chmod -R g+s #{deploy_to}"
-    end
-  end
+  # desc 'Restart application'
+  # task :restart do
+  #   on roles(:app), in: :sequence, wait: 5 do
+  #     # Your restart mechanism here, for example:
+  #     # execute :touch, release_path.join('tmp/restart.txt')
+  #     execute :chown, "-R :#{fetch(:group)} #{deploy_to} && chmod -R g+s #{deploy_to}"
+  #   end
+  # end
 
   # desc 'Runs rake db:migrate if migrations are set'
   # task :migrate do
@@ -66,40 +66,40 @@ namespace :deploy do
     # end
   # end
 
-  desc "Transfer Figaro's application.yml to shared/config"
-  task :migrate do
-    on roles(:all), in: :sequence, wait: 5 do
-      execute 'cd #{deploy_to}/current'      
-      execute 'bundle install --path vendor/cache'
-      execute 'rake db:migrate RAILS_ENV = production'      
-    end
-  end
+  # desc "Transfer Figaro's application.yml to shared/config"
+  # task :migrate do
+  #   on roles(:all), in: :sequence, wait: 5 do
+  #     execute 'cd #{deploy_to}/current'
+  #     execute 'cd #{deploy_to}/current && bundle install --path vendor/cache'
+  #     execute 'cd #{deploy_to}/current && bundle exec rake db:migrate RAILS_ENV = production'      
+  #   end
+  # end
 
-  after :publishing, :restart
+  # after :publishing, :restart
   
 
-  namespace :dbsetup do
-    desc "run bundle_install"
-    task :bundleinstall do
-      on roles(:all) do
-        run 'mv database.yml #{deploy_to}/current/config'
-        run "cd '#{deploy_to}'/current/"
-        run "bundle install"
-      end
-    end
-  end
+  # namespace :dbsetup do
+  #   desc "run bundle_install"
+  #   task :bundleinstall do
+  #     on roles(:all) do
+  #       run 'mv database.yml #{deploy_to}/current/config'
+  #       run "cd '#{deploy_to}'/current/"
+  #       run "bundle install"
+  #     end
+  #   end
+  # end
 
-  namespace :figaro do      
-   desc "Transfer Figaro's application.yml to shared/config"
-   task :upload do
-     on roles(:all) do
-       upload! "config/database.yml", "#{shared_path}/config/database.yml"
-     end
-   end
- end
+ #  namespace :figaro do      
+ #   desc "Transfer Figaro's application.yml to shared/config"
+ #   task :upload do
+ #     on roles(:all) do
+ #       upload! "config/database.yml", "#{shared_path}/config/database.yml"
+ #     end
+ #   end
+ # end
 
- after 'deploy:updated', 'deploy:migrate'
- before "deploy:check", "figaro:upload"
+ # after 'deploy:updated', 'deploy:migrate'
+ # before "deploy:check", "figaro:upload"
  # after "deploy:finished", "dbsetup:bundleinstall"
  
 
